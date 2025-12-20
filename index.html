@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Bot Menu Designer (Dark Tech Zone)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;500;700&display=swap');
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Helvetica Neue', sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Left Side - Controls */
+        .controls {
+            width: 50%;
+            padding: 20px;
+            background: #1e1e1e;
+            overflow-y: auto;
+            border-right: 1px solid #333;
+        }
+
+        h2 { color: #00a884; border-bottom: 2px solid #00a884; padding-bottom: 10px; }
+        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #aaa; }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #2c2c2c;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        textarea { height: 300px; font-family: monospace; white-space: pre; }
+        input:focus, textarea:focus { outline: none; border-color: #00a884; }
+
+        /* Right Side - Preview */
+        .preview-area {
+            width: 50%;
+            background-color: #0b141a; /* WhatsApp Dark BG */
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-blend-mode: overlay;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 380px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        /* Message Bubble */
+        .message-bubble {
+            background-color: #005c4b; /* Sent message dark green */
+            border-radius: 10px;
+            padding: 5px;
+            max-width: 100%;
+            position: relative;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+            color: #e9edef;
+            font-size: 14.2px;
+            line-height: 19px;
+        }
+
+        /* External Ad Reply Context */
+        .context-info {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            margin: 3px;
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            border-left: 4px solid #dba617; /* Highlight color */
+        }
+        
+        .context-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+            background: #333;
+        }
+
+        .context-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .context-title { font-weight: bold; color: #e9edef; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .context-body { color: #b4b4b4; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Document Preview Style */
+        .document-preview {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            margin: 3px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .doc-icon {
+            background: #ff5252;
+            color: white;
+            width: 40px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .doc-details { flex-grow: 1; }
+        .doc-name { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+        .doc-meta { font-size: 11px; color: rgba(255,255,255,0.6); }
+
+        /* Caption Text */
+        .caption-text {
+            padding: 5px 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .time {
+            text-align: right;
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+            margin-top: -5px;
+            padding-right: 5px;
+            padding-bottom: 3px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .read-ticks { color: #53bdeb; font-size: 14px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <h2>🛠️ Menu Builder</h2>
+        
+        <div class="input-group">
+            <label>Ad Reply Title (Context Info)</label>
+            <input type="text" id="adTitle" value="🚀 𝚀𝚄𝙴𝙴𝙽 𝙸𝙼𝙰𝙻𝚂𝙷𝙰 🚀" oninput="updatePreview()">
+        </div>
+        
+        <div class="input-group">
+            <label>Ad Reply Body</label>
+            <input type="text" id="adBody" value="The Best WhatsApp Bot" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+            <label>Thumbnail URL</label>
+            <input type="text" id="thumbUrl" value="https://files.catbox.moe/letvwf.jpg" oninput="updatePreview()">
+        </div>
+
+        <hr style="border-color: #333">
+
+        <div class="input-group">
+            <label>Document Name</label>
+            <input type="text" id="docName" value="𝚀𝚄𝙴𝙴𝙽 𝙸𝙼𝙰𝙻𝚂𝙷𝙰 𝙼𝙴𝙽𝚄" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+            <label>Fake File Size</label>
+            <input type="text" id="docSize" value="110 TB" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+            <label>Page Count</label>
+            <input type="text" id="pageCount" value="2024 Pages" oninput="updatePreview()">
+        </div>
+
+        <hr style="border-color: #333">
+
+        <div class="input-group">
+            <label>Menu Caption (Paste your Code Text here)</label>
+            <textarea id="caption" oninput="updatePreview()">
+*╭━━〔 🚀 𝚀𝚄𝙴𝙴𝙽 𝙸𝙼𝙰𝙻𝚂𝙷𝙰 🚀 〕━━┈⊷*
+*┃◆╭───────────────*
+*┃◆│ 👤 𝚄𝚂𝙴𝚁 : User*
+*┃◆│ 🛡️ 𝙼𝙾𝙳𝙴 : 𝙿𝚄𝙱𝙻𝙸𝙲*
+*┃◆│ 🎮 𝙿𝚁𝙴𝙵𝙸𝚇 : [ . ]*
+*┃◆│ 🆚 𝚅𝙴𝚁𝚂𝙸𝙾𝙽 : 1.0.0*
+*┃◆╰───────────────*
+*╰━━━━━━━━━━━━━━━━━┈⊷*
+
+*╭━━〔 📁 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 📁 〕━━┈⊷*
+*┃◆│ 🎵 𝚂𝙾𝙽𝙶*
+*┃◆│ 🎬 𝚅𝙸𝙳𝙴𝙾*
+*┃◆│ 📹 𝚃𝙸𝙺𝚃𝙾𝙺*
+*┃◆│ 📘 𝙵𝙱*
+*┃◆│ 📱 𝙰𝙿𝙺*
+*┃◆│ 🖼️ 𝙸𝙼𝙶*
+*╰━━━━━━━━━━━━━━━┈⊷*
+
+*ᴘᴏᴡᴇʀᴇᴅ ʙʏ ǫᴜᴇᴇɴ ɪᴍᴀʟsʜᴀ*
+            </textarea>
+        </div>
+    </div>
+
+    <div class="preview-area">
+        <div class="phone-screen">
+            <div class="message-bubble">
+                
+                <div class="context-info">
+                    <img src="" id="prev-thumb" class="context-img">
+                    <div class="context-text">
+                        <div class="context-title" id="prev-ad-title"></div>
+                        <div class="context-body" id="prev-ad-body"></div>
+                    </div>
+                </div>
+
+                <div class="document-preview">
+                    <div class="doc-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="doc-details">
+                        <div class="doc-name" id="prev-doc-name"></div>
+                        <div class="doc-meta">
+                            <span id="prev-page-count"></span> • PDF • <span id="prev-doc-size"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="caption-text" id="prev-caption"></div>
+                
+                <div class="time">
+                    10:45 AM <span class="read-ticks"><i class="fas fa-check-double"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updatePreview() {
+            // Get values
+            const adTitle = document.getElementById('adTitle').value;
+            const adBody = document.getElementById('adBody').value;
+            const thumbUrl = document.getElementById('thumbUrl').value;
+            const docName = document.getElementById('docName').value;
+            const docSize = document.getElementById('docSize').value;
+            const pageCount = document.getElementById('pageCount').value;
+            const caption = document.getElementById('caption').value;
+
+            // Set values
+            document.getElementById('prev-ad-title').innerText = adTitle;
+            document.getElementById('prev-ad-body').innerText = adBody;
+            document.getElementById('prev-thumb').src = thumbUrl;
+            document.getElementById('prev-doc-name').innerText = docName;
+            document.getElementById('prev-doc-size').innerText = docSize;
+            document.getElementById('prev-page-count').innerText = pageCount;
+
+            // Handle Formatting (Basic Bolding for *text*)
+            let formattedCaption = caption
+                .replace(/\*(.*?)\*/g, '<b>$1</b>') // Bold
+                .replace(/_(.*?)_/g, '<i>$1</i>') // Italic
+                .replace(/`(.*?)`/g, '<code>$1</code>'); // Monospace
+
+            document.getElementById('prev-caption').innerHTML = formattedCaption;
+        }
+
+        // Run once on load
+        updatePreview();
+    </script>
+</body>
+</html>
